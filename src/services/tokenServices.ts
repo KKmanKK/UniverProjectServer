@@ -22,7 +22,7 @@ class TokenServices {
             refreshToken
         }
     }
-    async saveToken(userId: any, refreshToken: any): Promise<any> {
+    async saveToken(userId: number, refreshToken: string): Promise<any> {
         try {
             const client = createClient()
             await client.connect();
@@ -41,6 +41,38 @@ class TokenServices {
         catch (e: any) {
             console.log(e);
         }
+    }
+    validateAccessToken(accessToken: string) {
+        try {
+            let tokenData: any
+            if (this._secretAccess) {
+                tokenData = jwt.verify(accessToken, this._secretAccess)
+            }
+            return tokenData
+        }
+        catch (e: any) {
+            return null
+        }
+    }
+    validateRefreshToken(refreshToken: string) {
+        try {
+            let tokenData: any
+            if (this._refreshAccess) {
+                tokenData = jwt.verify(refreshToken, this._refreshAccess)
+                return tokenData
+            }
+
+        }
+        catch (e: any) {
+            return null
+        }
+    }
+    async removeToken(refreshToken: string) {
+        const client = createClient()
+        await client.connect();
+        const tokenData = await client.get(`token`)
+        console.log("=================");
+        console.log(tokenData);
     }
 }
 export let tokenServices = new TokenServices();
