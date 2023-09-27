@@ -32,12 +32,10 @@ class AuthController {
     }
     async logout(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("======");
-            console.log(req.cookies);
-            console.log("==============");
+
             await userServices.logout(req.cookies.refreshToken)
             res.clearCookie("refreshToken")
-            return res.status(200)
+            return res.status(200).json("")
         }
         catch (e: any) {
             console.log(e);
@@ -46,7 +44,9 @@ class AuthController {
     }
     async refresh(req: Request, res: Response, next: NextFunction) {
         try {
-
+            const userData = await userServices.refresh(req.cookies.refreshToken)
+            res.cookie("refreshToken", userData.tokens.refreshToken, { httpOnly: true, maxAge: 3600 * 60 * 60 * 60 })
+            return res.status(200).json(userData)
         }
         catch (e: any) {
             console.log(e);

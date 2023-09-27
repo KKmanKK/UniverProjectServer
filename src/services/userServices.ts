@@ -36,10 +36,32 @@ class UserServices implements IUserServices {
         }
     }
     async logout(refreshToken: string) {
-        console.log("UserServices");
         await tokenServices.removeToken(refreshToken)
         return
     }
+    async refresh(refreshToken: string): Promise<IUserReturnTypes> {
+
+        if (!refreshToken) {
+            throw new Error("Токена нету")
+        }
+        const userData = await tokenServices.validateRefreshToken(refreshToken)
+        const tokenDb = await tokenServices.findToken(userData.userId)
+        if (!userData || !tokenDb) {
+            throw new Error("Токена нету")
+        }
+        const user: IUser | null = await prisma.user.findFirst({ where: { id: userData.userId } })
+        if (!user) {
+            throw new Error("Пользователь не найден")
+        }
+        const tokens = tokenServices.genirateToken({ userId: user.id })
+        await tokenServices.saveToken(user.id, tokens.refreshToken)
+        return {
+            user,
+            tokens
+        }
+
+    }
+
 
 }
 export let userServices = new UserServices();

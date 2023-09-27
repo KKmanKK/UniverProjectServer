@@ -68,11 +68,25 @@ class TokenServices {
         }
     }
     async removeToken(refreshToken: string) {
+        try {
+            const client = createClient()
+            await client.connect();
+            const tokenData = this.validateRefreshToken(refreshToken)
+            if (!tokenData) {
+                throw new Error("Ошибка с токеном")
+            }
+            await client.del(`token?userId=${tokenData.userId}`)
+            return
+        }
+        catch (e: any) {
+            console.log(e);
+        }
+    }
+    async findToken(userId: number) {
         const client = createClient()
         await client.connect();
-        const tokenData = await client.get(`token`)
-        console.log("=================");
-        console.log(tokenData);
+        const token = await client.get(`token?userId=${userId}`)
+        return token;
     }
 }
 export let tokenServices = new TokenServices();
