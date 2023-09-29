@@ -7,9 +7,10 @@ const prisma = new PrismaClient()
 class UserServices implements IUserServices {
     //метод для создания пользователя возвращающий объект с данными пользователя и токены его 
     async createUser(email: string, password: string): Promise<IUserReturnTypes> {
+
         const psevdUser: IUser | null = await prisma.user.findFirst({ where: { email } }) //получаем пользователя из базы данных по его почте
         if (psevdUser) {
-            throw new Error("Пользователь уже существует")
+            throw new Error("User with such an email already exists")
         }
         const hashPass = await bcrypt.hash(password, 4); //хэшируем пароль (передаем ему сам пароль и уровень хэширования)
         const user = await prisma.user.create({ data: { email, passord: hashPass } }) //создаем пользователя 

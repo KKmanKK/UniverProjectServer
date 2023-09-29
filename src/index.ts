@@ -3,7 +3,7 @@ import express from "express"
 import dotenv from "dotenv"
 import authRouter from "./routers/regRouter.js"
 import lesonRouter from "./routers/lessonRouter.js"
-
+import logger from "./utils/logger.js"
 import cookieParser from "cookie-parser"
 dotenv.config()
 
@@ -20,7 +20,7 @@ app.use("/", lesonRouter) // для маршрутизации запросов,
 //функция для старта приложения
 const start = () => {
     try {
-        app.listen(PORT, () => { console.log("Запуск", PORT); }) // запуск сервера и прослушка порта
+        app.listen(PORT, () => { logger.info(`Start on port: ${PORT}`); }) // запуск сервера и прослушка порта
     }
     catch (e: any) {
         console.log(e);
