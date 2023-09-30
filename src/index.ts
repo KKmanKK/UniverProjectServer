@@ -5,6 +5,8 @@ import authRouter from "./routers/regRouter.js"
 import lesonRouter from "./routers/lessonRouter.js"
 import logger from "./utils/logger.js"
 import cookieParser from "cookie-parser"
+import routes from "./routers/routes.js"
+import swaggerDocs from "./utils/swagger.js"
 dotenv.config()
 
 const PORT = process.env.PORT || 3000 // берем порт из переменных окружения или же порт 3000
@@ -15,12 +17,13 @@ app.use(express.json()) //middleware для обработки данных в j
 
 app.use(cookieParser()) //middleware для обработки куки
 
-app.use("/api", authRouter)// для маршрутизации запросов, которые будут нужны для авторизации
-app.use("/", lesonRouter) // для маршрутизации запросов, которые будут относится ко всем дургим запросам
+
 //функция для старта приложения
 const start = () => {
     try {
         app.listen(PORT, () => { logger.info(`Start on port: ${PORT}`); }) // запуск сервера и прослушка порта
+        routes(app)
+        swaggerDocs(app, +PORT)
     }
     catch (e: any) {
         console.log(e);

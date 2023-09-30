@@ -9,8 +9,12 @@ interface ILeson {
     userId?: number | null;
 }
 class LessonServices {
-    async create(text: string) {
-        const lessons = await prisma.lesson.create({ data: { text } })
+    async create(text: string, name: string) {
+        const lesson = await prisma.lesson.findFirst({ where: { name } })
+        if (lesson) {
+            throw new Error("Lesson exists")
+        }
+        const lessons = await prisma.lesson.create({ data: { name, text } })
         if (!lessons) {
             throw new Error("Не удалось создать урок")
         }

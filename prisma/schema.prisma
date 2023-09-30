@@ -19,6 +19,7 @@ model User {
 
 model Lesson {
   id       Int    @id @default(autoincrement())
+  name     String @unique
   text     String
   speed    Int?
   accuracy Int?
