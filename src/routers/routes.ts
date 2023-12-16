@@ -11,9 +11,11 @@ function routes(app: Express) {
     app.get("/api/logout", authController.logout)
     app.get("/api/refresh", authController.refresh)
 
-    app.post("/api/lesson", validate(createLessonSchema), lessonCotroller.createLessons)
-    app.get("/api/lesson", lessonCotroller.getLessons)
-    app.get("/api/lesson:id", validate(getByIdLessonSchema), lessonCotroller.getLessonById)
+    app.post("/api/lessons", validate(createLessonSchema), lessonCotroller.createLessons)
+    app.get("/api/lessons", lessonCotroller.getLessons)
+    app.get("/api/lessons/:id", validate(getByIdLessonSchema), lessonCotroller.getLessonById)
 }
+
+
 
 export default routes
